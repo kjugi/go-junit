@@ -50,7 +50,9 @@ func TestExamplesInTheWild(t *testing.T) {
 				assertLen(t, suites, 2)
 				assertLen(t, suites[0].Tests, 2)
 				assertLen(t, suites[1].Tests, 2)
+				assertEqual(t, "package/name1", suites[0].Properties["name"])
 				assertEqual(t, "1.0", suites[0].Properties["go.version"])
+				assertEqual(t, "package/name2", suites[1].Properties["name"])
 				assertEqual(t, "1.0", suites[1].Properties["go.version"])
 				assertError(t, suites[1].Tests[0].Error, "file_test.go:11: Error message\nfile_test.go:11: Longer\n\terror\n\tmessage.")
 			},
@@ -86,6 +88,8 @@ func TestExamplesInTheWild(t *testing.T) {
 				assertLen(t, suites[0].Tests, 6)
 				assertEqual(t, "\n", suites[0].Properties["line.separator"])
 				assertEqual(t, `\`, suites[0].Properties["file.separator"])
+				assertEqual(t, `IT-Interface-WLI-FI`, suites[0].Properties["package"])
+				assertEqual(t, 59, len(suites[0].Properties))
 			},
 		},
 		{
@@ -105,8 +109,11 @@ func TestExamplesInTheWild(t *testing.T) {
 			check: func(t *testing.T, suites []Suite) {
 				assertLen(t, suites, 1)
 				assertLen(t, suites[0].Tests, 1)
+				assertEqual(t, "0", suites[0].Properties["failures"])
+				assertEqual(t, "suite property value", suites[0].Properties["suite property name"])
 				assertEqual(t, "\n                I am stdout!\n            ", suites[0].Tests[0].SystemOut)
 				assertEqual(t, "\n                I am stderr!\n            ", suites[0].Tests[0].SystemErr)
+				assertEqual(t, "some.property.value", suites[0].Tests[0].Properties["some.property.name"])
 			},
 		},
 		{

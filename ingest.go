@@ -6,6 +6,7 @@
 package junit
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -35,13 +36,16 @@ func ingestSuite(root xmlNode) Suite {
 		switch node.XMLName.Local {
 		case "testsuite":
 			testsuite := ingestSuite(node)
+			fmt.Printf(">>>>>>>>>>>>> testsuite %+v \n", testsuite)
 			suite.Suites = append(suite.Suites, testsuite)
 		case "testcase":
 			testcase := ingestTestcase(node)
 			suite.Tests = append(suite.Tests, testcase)
 		case "properties":
 			props := ingestProperties(node)
-			suite.Properties = props
+			for k, v := range props {
+				suite.Properties[k] = v
+			}
 		case "system-out":
 			suite.SystemOut = string(node.Content)
 		case "system-err":
@@ -90,6 +94,11 @@ func ingestTestcase(root xmlNode) Test {
 			test.Status = StatusError
 			test.Message = node.Attr("message")
 			test.Error = ingestError(node)
+		case "properties":
+			props := ingestProperties(node)
+			for k, v := range props {
+				test.Properties[k] = v
+			}
 		case "system-out":
 			test.SystemOut = string(node.Content)
 		case "system-err":
